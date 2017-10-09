@@ -354,15 +354,35 @@ var Scroller = function(node) {
 
 			ignoreScrollEvent = true;
 
+			function fastForwardVideo() {
+		    var newTime = this.currentTime() + 15 > 0 ? this.currentTime() + 15 : 0;
+		    this.currentTime(newTime);
+		  }
+
+		  function rewindVideo() {
+		    var newTime = this.currentTime() - 15 > 0 ? this.currentTime() - 15 : 0;
+		    this.currentTime(newTime);
+		  }
+
 			function transformVideoElements(content) {
 				var videos = $(content).find('video');
 				var videosArray = videos.toArray();
+
 				for (var video in videosArray) {
-					videojs(videosArray[video], {
+					var player = videojs(videosArray[video], {
 						loop: true,
 						fluid: true,
 						playbackRates: [0.5, 1, 1.5, 2.0]
 					});
+
+					var rewind = player.controlBar.addChild('button');
+				  rewind.el_.className = 'material-icons vjs-control vjs-button';
+				  rewind.el_.innerText = 'replay_30';
+				  rewind.on('click', rewindVideo.bind(player));
+					var forward = player.controlBar.addChild('button');
+				  forward.el_.className = 'material-icons vjs-control vjs-button';
+				  forward.el_.innerText = 'forward_30';
+				  forward.on('click', fastForwardVideo.bind(player));
 				}
 			}
 
@@ -375,11 +395,6 @@ var Scroller = function(node) {
 					node.scrollTop(0);
 					// use videojs to transform the default html player
 					transformVideoElements(content);
-					// var player = videos ? videojs(testingstuff) : null;
-					// debugger;
-					// console.log('text content', content);
-					// console.log(content[0].childNodes[3].childNodes[1]);
-					// console.log(content[0].childNodes)
 					wrapper.append(content);
 
 
