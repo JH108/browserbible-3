@@ -383,6 +383,13 @@ var Scroller = function(node) {
 				  forward.el_.className = 'material-icons vjs-control vjs-button';
 				  forward.el_.innerText = 'forward_30';
 				  forward.on('click', fastForwardVideo.bind(player));
+				  var download = player.controlBar.addChild('button');
+				  download.el_.className = 'material-icons vjs-control vjs-button';
+				  var a = document.createElement('a');
+				  a.setAttribute('href', videosArray[video].src);
+				  a.setAttribute('class', 'download-button-style');
+				  a.innerText = 'file_download';
+				  download.el_.appendChild(a);
 				}
 			}
 
