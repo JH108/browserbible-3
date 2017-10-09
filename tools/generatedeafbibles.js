@@ -607,11 +607,11 @@ function createDeafVideoVersion(id, langCode, langName, name, abbr, jsonData, ve
 								'<input type="button" class="deaf-story active" data-src="http://video.dbt.io/' + videoPath + '" value="Story" />' +
 								'<input type="button" class="deaf-lessons" data-src="http://video.dbt.io/' + element.related_videos[2].path + '" value="Lessons" />' +
 							'</div>' +
-							'<video src="http://video.dbt.io/' + videoPath + '" preload="none" class="inline-video" controls poster="//cloud.faithcomesbyhearing.com/segment-art/700X510/DOOR-' + element.segment_order +'.jpg"></video>' +
+							'<video src="http://video.dbt.io/' + videoPath + '" preload="none" data-setup=\'{"playbackRates": "[1, 1.5, 2], "}\' class="video-js vjs-default-skin inline-video" controls poster="//cloud.faithcomesbyhearing.com/segment-art/700X510/DOOR-' + element.segment_order +'.jpg"></video>' +
 						'</div>';
 			} else {
 				currentChapter.html += '<div class="s">Story</div>';
-				currentChapter.html += '<video src="http://video.dbt.io/' + videoPath + '" preload="none" class="inline-video" controls poster="//cloud.faithcomesbyhearing.com/segment-art/700X510/DOOR-' + element.segment_order +'.jpg"></video>';
+				currentChapter.html += '<video src="http://video.dbt.io/' + videoPath + '" preload="none" data-setup=\'{"playbackRates": "[1, 1.5, 2], "}\' class="video-js vjs-default-skin inline-video" controls poster="//cloud.faithcomesbyhearing.com/segment-art/700X510/DOOR-' + element.segment_order +'.jpg"></video>';
 			}
 
 
@@ -632,7 +632,7 @@ function createDeafVideoVersion(id, langCode, langName, name, abbr, jsonData, ve
 
 		} else {
 			currentChapter.html += '<div class="s">' + title + ' (' + verseRange + ')' + '</div>';
-			currentChapter.html += '<video src="http://video.dbt.io/' + videoPath + '" preload="none" class="inline-video" controls poster="' + thumbPath + '"></video>';
+			currentChapter.html += '<video src="http://video.dbt.io/' + videoPath + '" preload="none" data-setup=\'{"playbackRates": "[1, 1.5, 2], "}\' class="video-js vjs-default-skin inline-video" controls poster="' + thumbPath + '"></video>';
 		}
 
 		currentChapter.html += bibleFormatter.closeVerse();
