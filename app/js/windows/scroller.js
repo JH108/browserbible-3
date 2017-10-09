@@ -8,11 +8,11 @@ var Scroller = function(node) {
 		ignoreScrollEvent = false,
 		speedLastPos = null,
 		speedDelta = 0;
-		
+
 		speedIndicator = $('<div class="scroller-speed" style="z-index: 50; position: absolute; top: 0; left: 0; width: 50; background: black; padding: 5px;color:#fff"></div>')
 							.appendTo(node.parent())
 							.hide();
-	
+
 
 	var globalTimeout = null;
 
@@ -41,48 +41,48 @@ var Scroller = function(node) {
 
 		ext.trigger('scroll', {type: 'scroll', target: this, data: {locationInfo: locationInfo}});
 		startGlobalTimeout();
-		
-		start_speed_test();		
+
+		start_speed_test();
 	});
-	
-	
+
+
 	var speedInterval = null;
-	
+
 	function start_speed_test() {
 		if (speedInterval == null) {
 
 			speedInterval = setInterval(checkSpeed, 100);
 		}
 	}
-	
+
 	function stop_speed_test() {
 		if (speedInterval != null) {
 			clearInterval(speedInterval);
 			speedInterval = null;
-		}		
-		
+		}
+
 	}
-	
+
 	function checkSpeed() {
-			
+
 		var speedNewPos = node.scrollTop();
-		if ( speedLastPos != null ){ // && newPos < maxScroll 
+		if ( speedLastPos != null ){ // && newPos < maxScroll
 			speedDelta = speedNewPos -  speedLastPos;
 		}
 		speedLastPos = speedNewPos;
-		
+
 		if (speedDelta === 0) {
 			load_more();
-			stop_speed_test();			
+			stop_speed_test();
 		}
-				
+
 /*
 		if (speedDelta != null) {
 			speedIndicator.html(speedDelta);
-		}		
+		}
 */
 	}
-	
+
 
 
 	// find the top most visible node (verse, page, etc.)
@@ -230,7 +230,7 @@ var Scroller = function(node) {
 	*/
 
 	function load_more() {
-			
+
 		// measure top and bottom height
 		var
 			fragmentid = null;
@@ -247,74 +247,74 @@ var Scroller = function(node) {
 
 		// only load if stopped
 		if (speedDelta == 0) {
-			
+
 			// add below
 			if (below_bottom < node_height*2) {
-	
+
 				fragmentid = sections
 								.last() // the last chapter (bottom)
 								.attr( 'data-nextid' );
-	
+
 				if (fragmentid != null && fragmentid != 'null' && sections.length < 50) {
 					load('next', fragmentid);
 				}
-	
-	
+
+
 			}
-	
+
 			// add above
 			else if (above_top < node_height*2) {
-	
+
 				fragmentid = sections
 								.first() // the first chapter (top)
 								.attr( 'data-previd' );
-	
+
 				//console.warn('load prev', fragmentid);
-	
+
 				if (fragmentid != null && fragmentid != 'null' && sections.length < 50) {
 					load('prev',fragmentid);
 				}
-	
+
 			}
-			
-			
-				
+
+
+
 			// remove above
 			else if (above_top > node_height*15) {
 				//console.warn('remove above');
-	
+
 				if (wrapper.children().length >= 2) {
-	
+
 					// we're removing the first section, so we need to find the first one and
 					// measure where its first child should appear
 					var first_node_of_second_section = wrapper.find('.section:eq(1)').children().first(),
 						first_node_offset_before = first_node_of_second_section.offset().top;
-	
+
 					wrapper.find('.section:first').remove();
-	
+
 					// now, remeasure where the first node appears and adjust the scrolltop
 					var
 						first_node_offset_after = first_node_of_second_section.offset().top,
 						offset_difference = first_node_offset_after - first_node_offset_before;
 						new_scrolltop = node.scrollTop();
 						updated_scrolltop = new_scrolltop - Math.abs(offset_difference);
-	
+
 					node.scrollTop(updated_scrolltop);
 				}
 			}
-			
-	
+
+
 			// remove below
 			else if (sections_count > 4 && below_bottom > node_height*15) {
 				//console.warn('remove below', below_bottom, node_height);
-	
+
 				wrapper.find('.section:last').remove();
 			}
 		} else {
-			
-			
+
+
 		}
-				
+
 	}
 
 	function load(loadType, sectionid, fragmentid) {
@@ -354,6 +354,18 @@ var Scroller = function(node) {
 
 			ignoreScrollEvent = true;
 
+			function transformVideoElements(content) {
+				var videos = $(content).find('video');
+				var videosArray = videos.toArray();
+				for (var video in videosArray) {
+					videojs(videosArray[video], {
+						loop: true,
+						fluid: true,
+						playbackRates: [0.5, 1, 1.5, 2.0]
+					});
+				}
+			}
+
 			switch (loadType) {
 				default:
 				case 'text':
@@ -361,8 +373,14 @@ var Scroller = function(node) {
 					// clear out and reset
 					wrapper.html('');
 					node.scrollTop(0);
+					// use videojs to transform the default html player
+					transformVideoElements(content);
+					// var player = videos ? videojs(testingstuff) : null;
+					// debugger;
+					// console.log('text content', content);
+					// console.log(content[0].childNodes[3].childNodes[1]);
+					// console.log(content[0].childNodes)
 					wrapper.append(content);
-
 
 
 					// TODO: scrollto fragmentid
@@ -378,19 +396,21 @@ var Scroller = function(node) {
 					break;
 
 				case 'next':
-
+					// use videojs to transform the default html player
+					transformVideoElements(content);
 					wrapper.append(content);
 
 
 					break;
 
 				case 'prev':
-
+					// use videojs to transform the default html player
+					transformVideoElements(content);
 					// add to top, measure, then reset scroll position
 					/*
 					var	node_scrolltop_before = node.scrollTop(),
 						first_item = node.find('.section').children().first();
-					
+
 					if (first_item.length > 0) {
 						var first_item_offset_top_before = first_item.offset().top;
 
